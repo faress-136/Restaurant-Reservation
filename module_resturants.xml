@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_resturants" default="compile.module.resturants">
+  <dirname property="module.resturants.basedir" file="${ant.file.module_resturants}"/>
+  
+  <property name="module.jdk.home.resturants" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.resturants" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.resturants" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.resturants" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="resturants.output.dir" value="${module.resturants.basedir}/out/production/Resturants"/>
+  <property name="resturants.testoutput.dir" value="${module.resturants.basedir}/out/test/Resturants"/>
+  
+  <path id="resturants.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="resturants.module.production.classpath">
+    <path refid="${module.jdk.classpath.resturants}"/>
+  </path>
+  
+  <path id="resturants.runtime.production.module.classpath">
+    <pathelement location="${resturants.output.dir}"/>
+  </path>
+  
+  <path id="resturants.module.classpath">
+    <path refid="${module.jdk.classpath.resturants}"/>
+    <pathelement location="${resturants.output.dir}"/>
+  </path>
+  
+  <path id="resturants.runtime.module.classpath">
+    <pathelement location="${resturants.testoutput.dir}"/>
+    <pathelement location="${resturants.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.resturants">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.resturants">
+    <patternset refid="excluded.from.module.resturants"/>
+  </patternset>
+  
+  <path id="resturants.module.sourcepath">
+    <dirset dir="${module.resturants.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.resturants" depends="compile.module.resturants.production,compile.module.resturants.tests" description="Compile module Resturants"/>
+  
+  <target name="compile.module.resturants.production" depends="register.custom.compilers" description="Compile module Resturants; production classes">
+    <mkdir dir="${resturants.output.dir}"/>
+    <javac2 destdir="${resturants.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.resturants}/javac">
+      <compilerarg line="${compiler.args.resturants}"/>
+      <bootclasspath refid="resturants.module.bootclasspath"/>
+      <classpath refid="resturants.module.production.classpath"/>
+      <src refid="resturants.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.resturants"/>
+    </javac2>
+    
+    <copy todir="${resturants.output.dir}">
+      <fileset dir="${module.resturants.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.resturants.tests" depends="register.custom.compilers,compile.module.resturants.production" description="compile module Resturants; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.resturants" description="cleanup module">
+    <delete dir="${resturants.output.dir}"/>
+    <delete dir="${resturants.testoutput.dir}"/>
+  </target>
+</project>
